@@ -34,7 +34,7 @@ if os.path.exists(STATIC_DIR):
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 @app.get("/{full_path:path}")
-async def serve_react(request: Request, full_path: str):
+async def serve_react(full_path: str):
     index_path = os.path.join(BUILD_DIR, "index.html")
     with open(index_path, "r") as f:
         content = f.read()
