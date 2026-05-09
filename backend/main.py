@@ -22,10 +22,6 @@ app.include_router(auth.router)
 app.include_router(projects.router)
 app.include_router(tasks.router)
 
-@app.get("/api")
-def root():
-    return {"message": "Team Task Manager API is running!"}
-
 @app.get("/health")
 def health():
     return {"status": "healthy"}
