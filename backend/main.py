@@ -27,14 +27,14 @@ app.include_router(tasks.router)
 def health():
     return {"status": "healthy"}
 
-frontend_build = os.path.join(os.path.dirname(__file__), "../frontend/build")
+BUILD_DIR = os.path.join(os.path.dirname(__file__), "../frontend/build")
+STATIC_DIR = os.path.join(BUILD_DIR, "static")
+
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 @app.get("/{full_path:path}")
-def serve_react(full_path: str):
-    file_path = os.path.join(frontend_build, full_path)
-    if os.path.exists(file_path) and os.path.isfile(file_path):
-        return FileResponse(file_path)
-    return FileResponse(os.path.join(frontend_build, "index.html"))
+async def serve_react(full_path: str):
+    return FileResponse(os.path.join(BUILD_DIR, "index.html"))
 
 if __name__ == "__main__":
     import uvicorn
