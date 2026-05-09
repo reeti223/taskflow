@@ -35,11 +35,10 @@ if os.path.exists(STATIC_DIR):
 
 @app.get("/{full_path:path}")
 async def serve_react(full_path: str):
+    if full_path.startswith("api/"):
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404)
     index_path = os.path.join(BUILD_DIR, "index.html")
     with open(index_path, "r") as f:
         content = f.read()
     return HTMLResponse(content=content)
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
