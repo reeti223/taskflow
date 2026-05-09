@@ -24,7 +24,7 @@ def check_project_access(project_id: int, user: User, db: Session, require_admin
         raise HTTPException(status_code=403, detail="Admin access required")
     return project
 
-@router.post("/", response_model=ProjectOut)
+@router.post("", response_model=ProjectOut)
 def create_project(data: ProjectCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     project = Project(name=data.name, description=data.description, owner_id=current_user.id)
     db.add(project)
@@ -32,7 +32,7 @@ def create_project(data: ProjectCreate, db: Session = Depends(get_db), current_u
     db.refresh(project)
     return project
 
-@router.get("/", response_model=List[ProjectOut])
+@router.get("", response_model=List[ProjectOut])
 def get_projects(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     if current_user.role == "admin":
         return db.query(Project).all()
