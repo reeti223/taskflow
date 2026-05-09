@@ -11,8 +11,7 @@ export default function Projects() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const load = () => getProjects().then(r => setProjects(r.data)).catch(() => {});
-
+  const load = () => getProjects().then(r => setProjects(Array.isArray(r.data) ? r.data : r.data.projects || r.data.data || [])).catch(() => {});
   useEffect(() => { load(); }, []);
 
   const handleCreate = async (e) => {
