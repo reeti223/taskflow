@@ -1,7 +1,7 @@
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import engine, Base
 from app.models import user, project, task
@@ -30,11 +30,15 @@ def health():
 BUILD_DIR = os.path.join(os.path.dirname(__file__), "../frontend/build")
 STATIC_DIR = os.path.join(BUILD_DIR, "static")
 
-app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+if os.path.exists(STATIC_DIR):
+    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 @app.get("/{full_path:path}")
-async def serve_react(full_path: str):
-    return FileResponse(os.path.join(BUILD_DIR, "index.html"))
+async def serve_react(request: Request, full_path: str):
+    index_path = os.path.join(BUILD_DIR, "index.html")
+    with open(index_path, "r") as f:
+        content = f.read()
+    return HTMLResponse(content=content)
 
 if __name__ == "__main__":
     import uvicorn
